@@ -4,12 +4,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.entity.Account;
+import com.example.entity.Message;
 import com.example.service.*;
+
+import java.util.List;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller using Spring. The endpoints you will need can be
@@ -22,6 +29,8 @@ public class SocialMediaController {
 
     @Autowired
     AccountService accountService;
+    @Autowired
+    MessageService messageService;
     /*
      * Create a new Account 
      * Endpoint POST localhost:8080/register.
@@ -35,7 +44,7 @@ public class SocialMediaController {
      * If the registration is not successful due to a duplicate username, the response status will be 409. (Conflict)-
      * If the registration is not successful for some other reason, the response status will be 400. (Client error)
      */
-    @PostMapping("/register")
+    @PostMapping("register")
     public ResponseEntity<Account> registerUser(@RequestBody Account account) {
         //throws exception if invalid
         Account created = accountService.register(account);
@@ -73,6 +82,11 @@ public class SocialMediaController {
      * If the creation of the message is not successful, the response status will be 400. (Client error)
      *
      */
+    @PostMapping("messages")
+    public ResponseEntity<Message> createMessage(@RequestBody Message message) {
+        Message created = messageService.create();
+        return ResponseEntity.ok(created);
+    }
     /*
      * Retrieve all messages.
      *
@@ -84,7 +98,11 @@ public class SocialMediaController {
      *
      * 
      */
-    
+    @GetMapping("messages")
+    public ResponseEntity<List<Message>> getAllMessages() {
+        List<Message> out = messageService.getAllMessages();
+        return ResponseEntity.ok(out);
+    }
     /*
      * Retrieve a message by its ID.
      *
@@ -95,6 +113,15 @@ public class SocialMediaController {
      * The response status will always be 200.
      *
      */
+    @GetMapping("messages/{messageId}")
+    public ResponseEntity<Message> getMessage(@PathVariable int messageId) {
+        if (messageService.messageExists(messageId)) {
+            Message out = messageService.getMessageById(messageId);
+            return ResponseEntity.ok(out);
+        } else {
+            return ResponseEntity.ok(null);
+        }
+    }
     /*
      * Delete a message identified by a message ID.
      *
@@ -105,7 +132,15 @@ public class SocialMediaController {
      * The response status will be 200.
      * If the message did not exist, the response status will be 200, but the response body will be empty.
      */
-    
+    @DeleteMapping("messages/{messageId}")
+    public ResponseEntity<String> deleteMessage(@PathVariable int messageId) {
+        if (messageService.messageExists(messageId)) {
+            int rows = messageService.deleteMessage(messageId);
+            return ResponseEntity.ok(""+rows);
+        } else {
+            return ResponseEntity.ok(null);
+        }
+    }
     /*
      * Update a message text identified by a message ID.
      *
@@ -118,6 +153,15 @@ public class SocialMediaController {
      * If the update of the message is not successful, the response status will be 400. (Client error)
      *
      */
+    @PatchMapping("messages/{messageId}")
+    public ResponseEntity<String> updateMessage(@RequestBody String messageText, @PathVariable int messageId) {
+        if (messageService.messageExists(messageId)) {
+            int rows = messageService.updateMessage(messageText,messageId);
+            return ResponseEntity.ok(""+rows);
+        } else {
+            return ResponseEntity.ok(null);
+        }
+    }
     /*
      *Retrieve all messages written by a particular user.
      *
@@ -127,6 +171,10 @@ public class SocialMediaController {
      * The list will be empty if there are no messages.
      * The response status will always be 200.
      */
-    
+    @GetMapping("accounts/{accountId}/messages")
+    public ResponseEntity<List<Message>> getMessagesFromUser(@PathVariable int accountId) {
+        List<Message> messages = MessageService.getUserMessages(accountId);
+        return ResponseEntity.ok(messages);
+    }
 
 }

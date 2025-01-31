@@ -1,7 +1,9 @@
 package com.example.exception;
 
-public class InvalidAccountException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class InvalidAccountException extends SocialMediaException {
     public InvalidAccountException(String message) {
-        super(message);
+        super(message,HttpStatus.BAD_REQUEST);
     }
 }

@@ -1,7 +1,9 @@
 package com.example.exception;
 
-public class UnauthorizedException extends SecurityException {
+import org.springframework.http.HttpStatus;
+
+public class UnauthorizedException extends SocialMediaException {
     public UnauthorizedException(String message) {
-        super(message);
+        super(message,HttpStatus.UNAUTHORIZED);
     }
 }
