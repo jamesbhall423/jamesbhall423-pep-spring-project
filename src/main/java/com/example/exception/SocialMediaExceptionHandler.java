@@ -6,12 +6,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 public class SocialMediaExceptionHandler {
     
-    @ExceptionHandler(ConflictException.class)
-    public ResponseEntity<String> handleException(ConflictException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-    }
-    @ExceptionHandler(InvalidAccountException.class)
-    public ResponseEntity<String> handleException(InvalidAccountException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    @ExceptionHandler(SocialMediaException.class)
+    public ResponseEntity<String> handleException(SocialMediaException e) {
+        return ResponseEntity.status(e.geHttpStatus()).body(e.getMessage());
     }
 }

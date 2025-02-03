@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.entity.Account;
 import com.example.entity.Message;
+import com.example.exception.InvalidMessageException;
 import com.example.service.*;
 
 import java.util.List;
@@ -27,10 +28,14 @@ import java.util.List;
 @RestController
 public class SocialMediaController {
 
+    private AccountService accountService;
+    private MessageService messageService;
+
     @Autowired
-    AccountService accountService;
-    @Autowired
-    MessageService messageService;
+    public SocialMediaController(AccountService accountService, MessageService messageService) {
+        this.accountService=accountService;
+        this.messageService=messageService;
+    }
     /*
      * Create a new Account 
      * Endpoint POST localhost:8080/register.
@@ -84,7 +89,7 @@ public class SocialMediaController {
      */
     @PostMapping("messages")
     public ResponseEntity<Message> createMessage(@RequestBody Message message) {
-        Message created = messageService.create();
+        Message created = messageService.create(message);
         return ResponseEntity.ok(created);
     }
     /*
@@ -135,8 +140,8 @@ public class SocialMediaController {
     @DeleteMapping("messages/{messageId}")
     public ResponseEntity<String> deleteMessage(@PathVariable int messageId) {
         if (messageService.messageExists(messageId)) {
-            int rows = messageService.deleteMessage(messageId);
-            return ResponseEntity.ok(""+rows);
+            messageService.deleteMessage(messageId);
+            return ResponseEntity.ok(""+1);
         } else {
             return ResponseEntity.ok(null);
         }
@@ -155,12 +160,8 @@ public class SocialMediaController {
      */
     @PatchMapping("messages/{messageId}")
     public ResponseEntity<String> updateMessage(@RequestBody String messageText, @PathVariable int messageId) {
-        if (messageService.messageExists(messageId)) {
-            int rows = messageService.updateMessage(messageText,messageId);
-            return ResponseEntity.ok(""+rows);
-        } else {
-            return ResponseEntity.ok(null);
-        }
+        messageService.updateMessage(messageText,messageId);
+        return ResponseEntity.ok(""+1);
     }
     /*
      *Retrieve all messages written by a particular user.
@@ -173,7 +174,7 @@ public class SocialMediaController {
      */
     @GetMapping("accounts/{accountId}/messages")
     public ResponseEntity<List<Message>> getMessagesFromUser(@PathVariable int accountId) {
-        List<Message> messages = MessageService.getUserMessages(accountId);
+        List<Message> messages = messageService.getUserMessages(accountId);
         return ResponseEntity.ok(messages);
     }
 

@@ -8,5 +8,8 @@ public class SocialMediaException extends RuntimeException {
         super(message);
         this.status=status;
     }
+    public HttpStatus geHttpStatus() {
+        return status;
+    }
     
 }
