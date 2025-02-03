@@ -159,7 +159,8 @@ public class SocialMediaController {
      *
      */
     @PatchMapping("messages/{messageId}")
-    public ResponseEntity<String> updateMessage(@RequestBody String messageText, @PathVariable int messageId) {
+    public ResponseEntity<String> updateMessage(@RequestBody Message message, @PathVariable int messageId) {
+        String messageText = message.getMessageText();
         messageService.updateMessage(messageText,messageId);
         return ResponseEntity.ok(""+1);
     }

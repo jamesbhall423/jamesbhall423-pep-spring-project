@@ -37,7 +37,7 @@ public class MessageService {
         return messageRepository.save(message);
     }
     public void validateMessageFormat(String text) {
-        if (text.length()==0) throw new InvalidMessageException("Text cannot be empty");
+        if (text==null||text.length()==0) throw new InvalidMessageException("Text cannot be empty");
         if (text.length()>255) throw new InvalidMessageException("Text length cannot be more than 255 charachters");
     }
     /*
