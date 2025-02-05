@@ -156,7 +156,7 @@ public class SocialMediaController {
      * If the update is successful, the response body will contain the number of rows updated (1), and the response status will be 200.
      * The message existing on the database will have the updated messageText.
      * If the update of the message is not successful, the response status will be 400. (Client error)
-     *
+     * 
      */
     @PatchMapping("messages/{messageId}")
     public ResponseEntity<String> updateMessage(@RequestBody Message message, @PathVariable int messageId) {
